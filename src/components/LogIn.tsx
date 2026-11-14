@@ -8,19 +8,21 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Input, LinkButton, PrimaryButton } from "./components";
-import { signUp } from "../constants/storage";
+import { logIn } from "../constants/storage";
 import { colors } from "../constants/themes";
 
-type Props = { onSuccess: (username: string) => void; onGoToLogin: () => void };
+type Props = {
+  onSuccess: (username: string) => void;
+  onGoToSignUp: () => void;
+};
 
-export default function SignUpScreen({ onSuccess, onGoToLogin }: Props) {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+export default function LoginScreen({ onSuccess, onGoToSignUp }: Props) {
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSignUp = async () => {
-    const result = await signUp(username, email, password);
+  const handleLogin = async () => {
+    const result = await logIn(identifier, password);
     if (result.ok) onSuccess(result.username);
     else setError(result.error);
   };
@@ -31,29 +33,27 @@ export default function SignUpScreen({ onSuccess, onGoToLogin }: Props) {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.form}
       >
-        <Text style={styles.title}>Create your profile</Text>
+        <Text style={styles.title}>З поверненням</Text>
         <Input
-          placeholder="User name"
-          value={username}
-          onChangeText={setUsername}
+          placeholder="Ім’я користувача або електронна пошта"
+          value={identifier}
+          onChangeText={setIdentifier}
         />
         <Input
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-        />
-        <Input
-          placeholder="Password"
+          placeholder="Пароль"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
         />
         {error ? <Text style={styles.error}>{error}</Text> : null}
-        <PrimaryButton title="Sign Up" onPress={handleSignUp} />
+        <PrimaryButton title="Увійти" onPress={handleLogin} />
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Already have a profile?</Text>
-          <LinkButton title="Log in" onPress={onGoToLogin} />
+          <Text style={styles.footerText}>Ще немає профілю?</Text>
+          <LinkButton
+            title="
+Зареєструватися"
+            onPress={onGoToSignUp}
+          />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

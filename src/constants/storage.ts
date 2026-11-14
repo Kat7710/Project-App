@@ -23,18 +23,24 @@ export async function signUp(
   email = email.trim();
 
   if (username.length < 3)
-    return { ok: false, error: "User name must be at least 3 characters." };
+    return {
+      ok: false,
+      error: "Ім'я користувача має містити щонайменше 3 символи.",
+    };
   if (!/^\S+@\S+\.\S+$/.test(email))
-    return { ok: false, error: "Please enter a valid email." };
+    return {
+      ok: false,
+      error: "Будь ласка, введіть дійсну електронну адресу.",
+    };
   if (password.length < 6)
-    return { ok: false, error: "Password must be at least 6 characters." };
+    return { ok: false, error: "Пароль має містити щонайменше 6 символів." };
 
   const users = await getUsers();
   if (users.some((u) => u.username.toLowerCase() === username.toLowerCase())) {
-    return { ok: false, error: "This user name is already taken." };
+    return { ok: false, error: "Це ім'я користувача вже зайняте." };
   }
   if (users.some((u) => u.email.toLowerCase() === email.toLowerCase())) {
-    return { ok: false, error: "This email is already registered." };
+    return { ok: false, error: "Ця електронна адреса вже зареєстрована." };
   }
 
   users.push({ username, email, password });
@@ -53,7 +59,10 @@ export async function logIn(
     (u) => u.username.toLowerCase() === id || u.email.toLowerCase() === id,
   );
   if (!user || user.password !== password) {
-    return { ok: false, error: "Wrong user name/email or password." };
+    return {
+      ok: false,
+      error: "Неправильне ім'я користувача/електронна адреса або пароль.",
+    };
   }
   await AsyncStorage.setItem(SESSION_KEY, user.username);
   return { ok: true, username: user.username };
